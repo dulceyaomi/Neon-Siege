@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Generador Pro HD de Sprites - Neon Siege</title>
+    <style>
+        body {
+            background-color: #080811;
+            color: #00ffff;
+            font-family: 'Segoe UI', Tahoma, monospace;
+            padding: 20px;
+            text-align: center;
+        }
+        h1 { text-shadow: 0 0 10px #00ffff; margin-bottom: 5px; }
+        p { color: #aaaaaa; }
+        .asset-box {
+            display: inline-block;
+            margin: 15px;
+            padding: 15px;
+            background: #10101c;
+            border: 1px solid rgba(0, 255, 255, 0.3);
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.8);
+        }
+        canvas {
+            border: 1px dashed #ff0055;
+            background: rgba(0, 0, 0, 0.4);
+            display: block;
+            margin: 12px auto;
+            border-radius: 4px;
+        }
+        button {
+            background: #00ffff;
+            border: none;
+            color: #000;
+            padding: 8px 16px;
+            font-weight: bold;
+            font-family: monospace;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: all 0.2s;
+        }
+        button:hover {
+            background: #ff0055;
+            color: #fff;
+            box-shadow: 0 0 10px #ff0055;
+        }
+        .download-all {
+            padding: 14px 28px;
+            font-size: 16px;
+            margin: 15px 0 25px 0;
+            background: #00ff66;
+            box-shadow: 0 0 15px rgba(0, 255, 102, 0.4);
+        }
+    </style>
+</head>
+<body>
+
+    <h1>🚀 GENERADOR PRO HD DE SPRITES & ASSETS</h1>
+    <p>Haz clic en el botón verde para descargar los nuevos gráficos Pro y reemplazarlos en tu carpeta de assets:</p>
+    <button class="download-all" onclick="downloadAll()">DESCARGAR TODOS LOS SPRITES PRO (.PNG)</button>
+
+    <div id="container"></div>
+
+    <script>
+        const assets = [
+            { id: 'player_sheet', name: 'player_sheet.png', w: 128, h: 32, draw: drawProPlayerSheet },
+            { id: 'guns_sheet', name: 'guns_sheet.png', w: 160, h: 32, draw: drawProGunsSheet },
+            { id: 'enemy_yellow', name: 'enemy_yellow.png', w: 32, h: 32, draw: drawProMeteorYellow },
+            { id: 'enemy_hunter', name: 'enemy_hunter.png', w: 32, h: 32, draw: drawProMeteorOrange },
+            { id: 'enemy_ranger', name: 'enemy_ranger.png', w: 32, h: 32, draw: drawProAlienUFO },
+            { id: 'enemy_tank', name: 'enemy_tank.png', w: 64, h: 64, draw: drawProBossUFO },
+            { id: 'bomb', name: 'bomb.png', w: 32, h: 32, draw: drawProBomb },
+            { id: 'galaxy_bg', name: 'galaxy_bg.png', w: 800, h: 600, draw: drawProGalaxyBg }
+        ];
+
+        const container = document.getElementById('container');
+
+        assets.forEach(asset => {
+            const box = document.createElement('div');
+            box.className = 'asset-box';
+            box.innerHTML = `<h3>${asset.name}</h3>`;
+            
+            const canvas = document.createElement('canvas');
+            canvas.width = asset.w;
+            canvas.height = asset.h;
+            canvas.id = asset.id;
+            
+            const ctx = canvas.getContext('2d');
+            asset.draw(ctx, asset.w, asset.h);
+
+            const btn = document.createElement('button');
+            btn.innerText = 'Guardar ' + asset.name;
+            btn.onclick = () => downloadCanvas(canvas, asset.name);
+
+            box.appendChild(canvas);
+            box.appendChild(btn);
+            container.appendChild(box);
+        });
+
+        function downloadCanvas(canvas, filename) {
+            const link = document.createElement('a');
+            link.download = filename;
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+        }
+
+        function downloadAll() {
+            assets.forEach(a => {
+                const cv = document.getElementById(a.id);
+                downloadCanvas(cv, a.name);
+            });
+        }
+
+        // --- 1. ASTRONAUTA CYBERPUNK (4 Frames de Caminata / Propulsores) ---
+        function drawProPlayerSheet(ctx, w, h) {
+            for (let i = 0; i < 4; i++) {
+                ctx.save();
+                ctx.translate(i * 32 + 16, 16);
+
+                // Fuego de Propulsor (Jetpack Glow)
+                ctx.shadowColor = '#ff0055';
+                ctx.shadowBlur = 8;
+                ctx.fillStyle = i % 2 === 0 ? '#ff0055' : '#ffff00';
+                ctx.beginPath();
+                ctx.moveTo(-11, -2); ctx.lineTo(-16 - (i % 3 * 2), 0); ctx.lineTo(-11, 2);
+                ctx.fill();
+
+                // Jetpack Metálico
+                ctx.shadowColor = '#00ffff';
+                ctx.shadowBlur = 4;
+                ctx.fillStyle = '#1e293b';
+                ctx.fillRect(-11, -7, 5, 14);
+                ctx.fillStyle = '#00ffff';
+                ctx.fillRect(-10, -5, 2, 10);
+
+                // Traje blindado
+                ctx.fillStyle = '#f1f5f9';
+                ctx.beginPath();
+                ctx.arc(0, 0, 9, 0, Math.PI * 2);
+                ctx.fill();
+
+                // Placas de armadura en hombros
+                ctx.fillStyle = '#0f172a';
+                ctx.beginPath();
+                ctx.arc(-2, -6, 4, 0, Math.PI * 2);
+                ctx.arc(-2, 6, 4, 0, Math.PI * 2);
+                ctx.fill();
+
+                // Piernas animadas
+                ctx.strokeStyle = '#94a3b8';
+                ctx.lineWidth = 3;
+                const legAnim = Math.sin(i * Math.PI / 2) * 5;
+                ctx.beginPath();
+                ctx.moveTo(-2, 5); ctx.lineTo(-4 + legAnim, 11);
+                ctx.moveTo(-2, -5); ctx.lineTo(-4 - legAnim, -11);
+                ctx.stroke();
+
+                // Visor holográfico reluciente
+                ctx.shadowColor = '#00ffff';
+                ctx.shadowBlur = 10;
+                const visorGrad = ctx.createRadialGradient(4, -1, 1, 4, -1, 6);
+                visorGrad.addColorStop(0, '#ffffff');
+                visorGrad.addColorStop(0.5, '#00ffff');
+                visorGrad.addColorStop(1, '#0284c7');
+                ctx.fillStyle = visorGrad;
+                ctx.beginPath();
+                ctx.ellipse(3, 0, 5, 6, 0, 0, Math.PI * 2);
+                ctx.fill();
+
+                ctx.restore();
+            }
+        }
+
+        // --- 2. EVOLUCIÓN PRO DE LAS 5 ARMAS ---
+        function drawProGunsSheet(ctx, w, h) {
+            const themes = [
+                { c1: '#ffff00', c2: '#ca8a04', name: 'Laser Pistol' },
+                { c1: '#38bdf8', c2: '#0284c7', name: 'Dual Rifle' },
+                { c1: '#fb923c', c2: '#ea580c', name: 'Heavy Cannon' },
+                { c1: '#a855f7', c2: '#7e22ce', name: 'Plasma Launcher' },
+                { c1: '#ff0055', c2: '#990033', name: 'BFG Oblivion' }
+            ];
+
+            for (let i = 0; i < 5; i++) {
+                ctx.save();
+                ctx.translate(i * 32 + 16, 16);
+
+                const t = themes[i];
+                ctx.shadowColor = t.c1;
+                ctx.shadowBlur = 8;
+
+                // Empuñadura
+                ctx.fillStyle = '#0f172a';
+                ctx.fillRect(-6, -2, 8, 5);
+
+                // Cuerpo del Arma
+                ctx.fillStyle = '#334155';
+                ctx.fillRect(-2, -5, 10 + i * 2, 8 + (i > 2 ? 2 : 0));
+
+                // Cañón con Núcleo Neón
+                ctx.fillStyle = t.c1;
+                ctx.fillRect(2, -3, 8 + i * 3, 4);
+
+                // Ventanas de disipación de calor
+                ctx.fillStyle = t.c2;
+                for (let k = 0; k < i + 1; k++) {
+                    ctx.fillRect(0 + k * 3, -4, 2, 1);
+                    ctx.fillRect(0 + k * 3, 4, 2, 1);
+                }
+
+                // Destello frontal en la boca del cañón
+                ctx.fillStyle = '#ffffff';
+                ctx.beginPath();
+                ctx.arc(10 + i * 3, -1, 2, 0, Math.PI * 2);
+                ctx.fill();
+
+                ctx.restore();
+            }
+        }
+
+        // --- 3. METEORITO AMARILLO EN LLAMAS (Rápido) ---
+        function drawProMeteorYellow(ctx, w, h) {
+            ctx.save();
+            ctx.translate(16, 16);
+
+            ctx.shadowColor = '#eab308';
+            ctx.shadowBlur = 12;
+
+            // Aura de Fuego
+            const grad = ctx.createRadialGradient(0, 0, 2, 0, 0, 14);
+            grad.addColorStop(0, '#fef08a');
+            grad.addColorStop(0.5, '#eab308');
+            grad.addColorStop(1, 'rgba(234, 179, 8, 0)');
+            ctx.fillStyle = grad;
+            ctx.beginPath();
+            ctx.arc(0, 0, 14, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Cuerpo Rocoso Irregular
+            ctx.fillStyle = '#713f12';
+            ctx.beginPath();
+            ctx.moveTo(-8, -6); ctx.lineTo(4, -10); ctx.lineTo(10, -3);
+            ctx.lineTo(8, 8); ctx.lineTo(-2, 11); ctx.lineTo(-10, 4);
+            ctx.closePath();
+            ctx.fill();
+
+            // Cráteres brillantes
+            ctx.fillStyle = '#fef08a';
+            ctx.beginPath();
+            ctx.arc(-2, -2, 3, 0, Math.PI * 2);
+            ctx.arc(4, 3, 2, 0, Math.PI * 2);
+            ctx.fill();
+
+            ctx.restore();
+        }
+
+        // --- 4. METEORITO VOLCÁNICO NARANJA ---
+        function drawProMeteorOrange(ctx, w, h) {
+            ctx.save();
+            ctx.translate(16, 16);
+
+            ctx.shadowColor = '#f97316';
+            ctx.shadowBlur = 12;
+
+            // Cuerpo Rocoso Magmático
+            ctx.fillStyle = '#451a03';
+            ctx.beginPath();
+            ctx.moveTo(-11, -5); ctx.lineTo(2, -12); ctx.lineTo(12, -4);
+            ctx.lineTo(11, 9); ctx.lineTo(-4, 12); ctx.lineTo(-12, 3);
+            ctx.closePath();
+            ctx.fill();
+
+            // Grietas de Magma
+            ctx.strokeStyle = '#f97316';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.moveTo(-8, -2); ctx.lineTo(2, 2); ctx.lineTo(8, -4);
+            ctx.moveTo(-2, 2); ctx.lineTo(4, 8);
+            ctx.stroke();
+
+            // Núcleo ardiente
+            ctx.fillStyle = '#ffedd5';
+            ctx.beginPath();
+            ctx.arc(0, 0, 3, 0, Math.PI * 2);
+            ctx.fill();
+
+            ctx.restore();
+        }
+
+        // --- 5. NAVE ALIENÍGENA VERDE (Cazador) ---
+        function drawProAlienUFO(ctx, w, h) {
+            ctx.save();
+            ctx.translate(16, 16);
+
+            ctx.shadowColor = '#22c55e';
+            ctx.shadowBlur = 10;
+
+            // Plato Inferior Neón
+            ctx.fillStyle = '#15803d';
+            ctx.beginPath();
+            ctx.ellipse(0, 3, 14, 5, 0, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Anillo Lumínico
+            ctx.strokeStyle = '#4ade80';
+            ctx.lineWidth = 2;
+            ctx.stroke();
+
+            // Cúpula de Cristal con Alien
+            const domeGrad = ctx.createRadialGradient(0, -3, 1, 0, -3, 8);
+            domeGrad.addColorStop(0, '#86efac');
+            domeGrad.addColorStop(1, '#166534');
+            ctx.fillStyle = domeGrad;
+            ctx.beginPath();
+            ctx.arc(0, -3, 8, Math.PI, 0);
+            ctx.fill();
+
+            // Ojos Rojos del Alien
+            ctx.fillStyle = '#ff0055';
+            ctx.fillRect(-3, -6, 2, 3);
+            ctx.fillRect(1, -6, 2, 3);
+
+            // Luces Punteras
+            ctx.fillStyle = '#ffffff';
+            ctx.fillRect(-10, 3, 2, 2);
+            ctx.fillRect(0, 6, 2, 2);
+            ctx.fillRect(8, 3, 2, 2);
+
+            ctx.restore();
+        }
+
+        // --- 6. NAVE NODRIZA JEFE (Dreadnought Morado) ---
+        function drawProBossUFO(ctx, w, h) {
+            ctx.save();
+            ctx.translate(32, 32);
+
+            ctx.shadowColor = '#a855f7';
+            ctx.shadowBlur = 18;
+
+            // Casco de la Nave Nodriza
+            ctx.fillStyle = '#3b0764';
+            ctx.beginPath();
+            ctx.moveTo(-28, 0); ctx.lineTo(-14, -18); ctx.lineTo(14, -18);
+            ctx.lineTo(28, 0); ctx.lineTo(16, 16); ctx.lineTo(-16, 16);
+            ctx.closePath();
+            ctx.fill();
+
+            // Placas Metálicas
+            ctx.strokeStyle = '#c084fc';
+            ctx.lineWidth = 2;
+            ctx.stroke();
+
+            // Núcleo de Energía Central (Ojo de Plasma)
+            const coreGrad = ctx.createRadialGradient(0, 0, 2, 0, 0, 12);
+            coreGrad.addColorStop(0, '#ffffff');
+            coreGrad.addColorStop(0.4, '#e879f9');
+            coreGrad.addColorStop(1, '#7e22ce');
+            ctx.fillStyle = coreGrad;
+            ctx.beginPath();
+            ctx.arc(0, 0, 11, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Generadores de Escudo Neón
+            ctx.fillStyle = '#22c55e';
+            ctx.beginPath();
+            ctx.arc(-20, -8, 3, 0, Math.PI * 2);
+            ctx.arc(0, -14, 3, 0, Math.PI * 2);
+            ctx.arc(20, -8, 3, 0, Math.PI * 2);
+            ctx.fill();
+
+            ctx.restore();
+        }
+
+        // --- 7. BOMBA CYBER-NUKES ---
+        function drawProBomb(ctx, w, h) {
+            ctx.save();
+            ctx.translate(16, 16);
+
+            ctx.shadowColor = '#d946ef';
+            ctx.shadowBlur = 12;
+
+            // Esfera de la Bomba
+            ctx.fillStyle = '#701a75';
+            ctx.beginPath();
+            ctx.arc(0, 2, 10, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Anillos de Energía
+            ctx.strokeStyle = '#f472b6';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.arc(0, 2, 12, 0, Math.PI * 2);
+            ctx.stroke();
+
+            // Detonador
+            ctx.fillStyle = '#00ffff';
+            ctx.fillRect(-3, -10, 6, 5);
+            ctx.fillStyle = '#ff0055';
+            ctx.fillRect(-1, -12, 2, 2);
+
+            ctx.restore();
+        }
+
+        // --- 8. GALAXIA DE ALTA DEFINICIÓN ---
+        function drawProGalaxyBg(ctx, w, h) {
+            // Fondo Cósmico
+            const bgGrad = ctx.createRadialGradient(w/2, h/2, 50, w/2, h/2, 550);
+            bgGrad.addColorStop(0, '#1e1b4b');
+            bgGrad.addColorStop(0.4, '#0f172a');
+            bgGrad.addColorStop(1, '#020617');
+            ctx.fillStyle = bgGrad;
+            ctx.fillRect(0, 0, w, h);
+
+            // Nubes de Nebulosa
+            for (let n = 0; n < 3; n++) {
+                const nx = Math.random() * w;
+                const ny = Math.random() * h;
+                const nr = 150 + Math.random() * 200;
+                const nebGrad = ctx.createRadialGradient(nx, ny, 10, nx, ny, nr);
+                nebGrad.addColorStop(0, n % 2 === 0 ? 'rgba(168, 85, 247, 0.15)' : 'rgba(6, 182, 212, 0.15)');
+                nebGrad.addColorStop(1, 'transparent');
+                ctx.fillStyle = nebGrad;
+                ctx.beginPath();
+                ctx.arc(nx, ny, nr, 0, Math.PI * 2);
+                ctx.fill();
+            }
+
+            // Estrellas con Destellos
+            for (let i = 0; i < 250; i++) {
+                const x = Math.random() * w;
+                const y = Math.random() * h;
+                const size = Math.random() * 1.8;
+                const colorRand = Math.random();
+
+                ctx.fillStyle = colorRand < 0.2 ? '#38bdf8' : colorRand < 0.4 ? '#f472b6' : '#ffffff';
+                ctx.beginPath();
+                ctx.arc(x, y, size, 0, Math.PI * 2);
+                ctx.fill();
+
+                // Destellos en estrellas grandes
+                if (size > 1.4) {
+                    ctx.strokeStyle = 'rgba(255, 255, 255, 0.4)';
+                    ctx.lineWidth = 0.5;
+                    ctx.beginPath();
+                    ctx.moveTo(x - 4, y); ctx.lineTo(x + 4, y);
+                    ctx.moveTo(x, y - 4); ctx.lineTo(x, y + 4);
+                    ctx.stroke();
+                }
+            }
+        }
+    </script>
+</body>
+</html>
