@@ -1,0 +1,108 @@
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    background-color: #050508;
+    color: #ffffff;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+}
+
+.game-wrapper {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    max-width: 96vw;
+    max-height: 96vh;
+}
+
+canvas {
+    max-width: 100%;
+    max-height: 96vh;
+    width: auto;
+    height: auto;
+    aspect-ratio: 4 / 3;
+    border: 2px solid #00ffff;
+    box-shadow: 0 0 20px rgba(0, 255, 255, 0.4);
+    background-color: #0a0a0f;
+    display: block;
+}
+
+/* Modal Neón para Registro de Nombre */
+#nameInputOverlay {
+    display: none;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(10, 10, 20, 0.95);
+    border: 2px solid #00ffff;
+    padding: 24px;
+    border-radius: 10px;
+    text-align: center;
+    color: white;
+    box-shadow: 0 0 25px rgba(0, 255, 255, 0.6);
+    z-index: 10;
+    width: 85%;
+    max-width: 320px;
+}
+
+#nameInputOverlay h3 {
+    margin-top: 0;
+    color: #ff0055;
+    font-family: monospace;
+    font-size: 20px;
+    letter-spacing: 1px;
+}
+
+#nameInputOverlay p {
+    font-size: 14px;
+    color: #cccccc;
+    margin-bottom: 15px;
+}
+
+#playerNameInput {
+    background: #11111a;
+    border: 1px solid #00ffff;
+    color: #00ffff;
+    padding: 10px 14px;
+    font-family: monospace;
+    font-size: 16px;
+    outline: none;
+    border-radius: 4px;
+    text-align: center;
+    width: 90%;
+    margin-bottom: 15px;
+}
+
+#playerNameInput:focus {
+    box-shadow: 0 0 10px #00ffff;
+}
+
+#saveScoreBtn {
+    background: #00ffff;
+    border: none;
+    color: #000000;
+    font-weight: bold;
+    padding: 10px 20px;
+    font-family: monospace;
+    font-size: 14px;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+}
+
+#saveScoreBtn:hover {
+    background: #ff0055;
+    color: #ffffff;
+    box-shadow: 0 0 10px #ff0055;
+}

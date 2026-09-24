@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Neon Siege - Arena Survival</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+    <div class="game-wrapper">
+        <canvas id="gameCanvas" width="800" height="600"></canvas>
+
+        <!-- Overlay de Registro de Puntuación -->
+        <div id="nameInputOverlay">
+            <h3>¡REGISTRA TU MARCA!</h3>
+            <p>Ingresa tu nombre para la tabla de puntuaciones:</p>
+            <input type="text" id="playerNameInput" maxlength="15" placeholder="Tu Nickname" value="Piloto Neón">
+            <br>
+            <button id="saveScoreBtn">GUARDAR PUNTAJE</button>
+        </div>
+    </div>
+
+    <!-- Módulos de Código Fuente del Juego -->
+    <script src="js/core/GameLoop.js"></script>
+    <script src="js/core/Input.js"></script>
+    <script src="js/core/ObjectPool.js"></script>
+    <script src="js/utils/Sprite.js"></script>
+    <script src="js/services/ScoreService.js"></script>
+    <script src="js/entities/Player.js"></script>
+    <script src="js/entities/Bullet.js"></script>
+    <script src="js/entities/Enemy.js"></script>
+    <script src="js/entities/Particle.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>
