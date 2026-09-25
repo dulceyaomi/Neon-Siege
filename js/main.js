@@ -599,7 +599,7 @@ function drawGameOver() {
 
     ctx.fillStyle = '#00ffff';
     ctx.font = 'bold 16px monospace';
-    ctx.fillText('Presiona [ R ] para volver al Menú Principal', canvas.width / 2, canvas.height - 40);
+    ctx.fillText('Presiona [ ENTER ] para guardar y volver al Menú Principal', canvas.width / 2, canvas.height - 40);
 
     ctx.textAlign = 'left';
 }
@@ -690,3 +690,52 @@ function draw() {
 
 const game = new GameLoop(update, draw);
 game.start();
+
+// --- LÓGICA DE TECLA ENTER EN GAME OVER ---
+// --- LÓGICA DE DOS PASOS CON ENTER (1. GUARDAR -> 2. VER PUNTAJES -> 3. IR AL MENÚ) ---
+document.addEventListener('DOMContentLoaded', () => {
+    const playerNameInput = document.getElementById('playerNameInput');
+    const saveScoreBtn = document.getElementById('saveScoreBtn');
+    const nameInputOverlay = document.getElementById('nameInputOverlay');
+    
+    let scoreSaved = false;
+
+    if (playerNameInput) {
+        playerNameInput.addEventListener('keydown', (e) => {
+            // Evitar que las teclas afecten al juego mientras escribes
+            e.stopPropagation();
+
+            if (e.key === 'Enter') {
+                e.preventDefault();
+
+                // PASO 1: Guardar el puntaje y ocultar la caja de texto
+                if (saveScoreBtn) {
+                    saveScoreBtn.click();
+                }
+                if (nameInputOverlay) {
+                    nameInputOverlay.style.display = 'none';
+                }
+                playerNameInput.blur(); // Quitar foco de la caja de texto
+
+                // Habilitar la bandera para que el PRÓXIMO Enter regrese al menú
+                setTimeout(() => {
+                    scoreSaved = true;
+                }, 150);
+            }
+        });
+
+        playerNameInput.addEventListener('keyup', (e) => {
+            e.stopPropagation();
+        });
+    }
+
+    // PASO 2: Escuchar el SEGUNDO Enter (o la tecla R) para volver al menú
+    window.addEventListener('keydown', (e) => {
+        if ((e.key === 'Enter' || e.key === 'r' || e.key === 'R') && scoreSaved) {
+            scoreSaved = false; // Resetear bandera
+            
+            // Manda la señal al motor del juego para regresar al Menú Principal
+            window.dispatchEvent(new KeyboardEvent('keydown', { key: 'r', code: 'KeyR', bubbles: true }));
+        }
+    });
+});
